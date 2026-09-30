@@ -18,6 +18,7 @@ class PageResult(BaseModel, Generic[T]):
 class ActionResult(BaseModel):
     ok: bool
     message: str
+    code: str = "ok"
     entry: dict[str, Any] | None = None
 
 
@@ -26,6 +27,8 @@ class EntryPayload(BaseModel):
 
     values: dict[str, Any] = Field(default_factory=dict)
     remark: str | None = None
+    request_id: str | None = None
+    expected_version: int | None = None
 
 
 

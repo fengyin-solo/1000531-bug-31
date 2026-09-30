@@ -27,6 +27,16 @@ class Store:
                 return row
         return None
 
+    def replace_rows(self, module: str, rows: list[dict[str, Any]]) -> None:
+        """事务回滚用：用快照整表替换当前数据。"""
+        self._tables[module] = rows
+
+    def reset_to_seed(self, module: str | None = None) -> None:
+        """测试或重新初始化时恢复示例数据。"""
+        names = [module] if module else list(self._tables)
+        for name in names:
+            self._tables[name] = [dict(row) for row in SEED_ROWS.get(name, [])]
+
     def overview(self) -> dict[str, object]:
         modules: list[dict[str, object]] = []
         for name in self.module_names():

@@ -10,13 +10,21 @@ from app.seed import SEED_ROWS
 
 
 class Store:
+    """内存数据仓库。
+
+    _tables 里既有业务模块表（参与运营概览），也有业务派生表（如校准计划清单、
+    领用待办），后者通过 HIDDEN_TABLES 标记，不计入概览与模块清单。
+    """
+
+    HIDDEN_TABLES = frozenset({"equipment_calibration", "equipment_loan"})
+
     def __init__(self) -> None:
         self._tables: dict[str, list[dict[str, Any]]] = {
             name: [dict(row) for row in rows] for name, rows in SEED_ROWS.items()
         }
 
     def module_names(self) -> list[str]:
-        return sorted(self._tables)
+        return sorted(name for name in self._tables if name not in self.HIDDEN_TABLES)
 
     def rows(self, module: str) -> list[dict[str, Any]]:
         return self._tables.setdefault(module, [])
